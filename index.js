@@ -86,7 +86,7 @@ Solis5G.prototype = {
           
           
           if (bNoAlarmFound > 0) {                        
-            this.log.warn('Device ok. No alarm found');
+            this.log.debug('Device ok. No alarm found');
             this.service.getCharacteristic(Characteristic.On).updateValue(0);
           } else { 
             this.log.warn('Device in alarm mode');
