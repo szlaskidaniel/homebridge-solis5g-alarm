@@ -12,8 +12,9 @@
 
 ## Description
 
-This [homebridge](https://github.com/homebridge/homebridge) plugin read Alarm state from Solis5G inverter using local network and exposes it as a Switch Accessory to Apple's [HomeKit](http://www.apple.com/ios/home/). 
+This [homebridge](https://github.com/homebridge/homebridge) plugin read Alarm state from Solis5G inverter using local network or Cloud and exposes it as a Switch Accessory to Apple's [HomeKit](http://www.apple.com/ios/home/). 
 If Alarm is active, switch is ON, otherwise it's turned OFF.
+Currently for Cloud mode error codes responsible for Power Loss are verified. (186E4 / 186E6). Locally anything marked as "Alert" will trigger Switch.
 
 ## Installation
 
@@ -45,7 +46,14 @@ If Alarm is active, switch is ON, otherwise it's turned OFF.
 | `password` | Passord that you use to open webPage from Solis Inverter | N/A |
 
 
-
+### Optional fields
+| Key | Description | Default |
+| --- | --- | --- |
+| `useCloud` | If set to true, soliscloud.com service will be used instead of local network | N/A |
+| `solis_url` | Main Solis URL where requests are send | `https://www.soliscloud.com:13333` |
+| `solis_keyid` | Solis KeyId (obtain from Solis support) | N/A |
+| `solis_secret` | Solis Secret (obtain from Solis support) | N/A |
+| `solis_deviceSN` | Solis DeviceSN (Your DeviceSN) | N/A |
 
 
 ### Additional options

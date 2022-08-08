@@ -1,10 +1,11 @@
 {
   "name": "homebridge-solis5g-alarm",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Homebridge plugin for a Solis5G Alarm state",
   "main": "index.js",
   "dependencies": {
-    "request": ">=2.88.0"    
+    "request": ">=2.88.0",
+    "moment": "^2.29.1"    
   },
   "engines": {
     "homebridge": ">=0.4.50",
