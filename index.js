@@ -103,13 +103,15 @@ Solis5G.prototype = {
         this.service.getCharacteristic(Characteristic.On).updateValue(new Error('Polling failed'))
         callback(error)
       } else {
-        try {          
-          if (response.statusCode === 401) {
-            this.log.warn('Authentication failed');
-            this.service.getCharacteristic(Characteristic.On).updateValue(new Error('Authentication failed'))
-            callback(error);
+        try {   
+          if (response?.statusCode !== 200) {
+            console.log(response.message);
+            this.log.warn(`Error HTTP ${response.statusCode}`);
+            this.service.getCharacteristic(Characteristic.On).updateValue(new Error('Polling failed'));
+            callback();
             return;
-          };
+          }       
+       
           this.log.debug('Device response: %s', responseBody);
           let activeAlarms;
           if (this.useCloud) {
