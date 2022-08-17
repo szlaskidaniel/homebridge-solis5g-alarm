@@ -39,6 +39,7 @@ function Solis5G (log, config) {
   this.firmware = config.firmware || packageJson.version
 
   this.service = new Service.Switch(this.name);
+  this.eventNoPower = new Service.MotionSensor('NoPowerEvent');
   
 }
 
@@ -132,10 +133,18 @@ Solis5G.prototype = {
             this.service.getCharacteristic(Characteristic.On).updateValue(0);
           } else { 
             this.log.warn('Device in alarm mode');
-            this.service.getCharacteristic(Characteristic.On).updateValue(1);
+            this.service.getCharacteristic(Characteristic.On).updateValue(1);   
+            
+            // Execute MotionEvent
+            this.eventNoPower.getCharacteristic(Characteristic.MotionDetected).updateValue(1);
+            sleep(10 * 1000).then(() => {
+              this.eventNoPower.getCharacteristic(Characteristic.MotionDetected).updateValue(0);
+            });
+
           }
-                
-          callback()
+              
+     
+          callback();
         } catch (e) {
           this.log.warn('Error parsing status: %s', e.message)
         }
@@ -159,7 +168,7 @@ Solis5G.prototype = {
       this._getStatus(function () {})
     }.bind(this), this.pollInterval * 1000)
 
-    return [this.informationService, this.service]
+    return [this.informationService, this.service, this.eventNoPower];
   }
 
 }
@@ -293,4 +302,8 @@ var Base64 = {
 
 function hmacSha1 (options) {
   return crypto.createHmac('sha1', options.secret).update(options.message).digest('base64')
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
