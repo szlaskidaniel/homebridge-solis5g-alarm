@@ -1,0 +1,1 @@
+sudo hb-service stop
