@@ -127,6 +127,7 @@ Solis5G.prototype = {
 
             const switchState = this.service.getCharacteristic(Characteristic.On).value ?? false;
 
+            //var webdata_alarm = "F15"; (local No-Grid)
             if (activeAlarms > 0) {
               this.log.debug('No alarm found');
               this.service.getCharacteristic(Characteristic.On).updateValue(0);
