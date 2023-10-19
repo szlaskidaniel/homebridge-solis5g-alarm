@@ -3,6 +3,7 @@ const packageJson = require('./package.json');
 const request = require('request');
 const crypto = require('crypto');
 const moment = require('moment');
+const { exec } = require('child_process');
 
 module.exports = function (homebridge) {
   Service = homebridge.hap.Service;
@@ -37,6 +38,9 @@ function Solis5G(log, config) {
 
   this.service = new Service.Switch(this.name);
   this.eventNoPower = new Service.MotionSensor('NoPowerEvent');
+
+  this.rebootOnNetworkFailure = config.rebootOnNetworkFailure; //connect ENETUNREACH 192.168.100.42:80 - Local (0.0.0.0:0)
+  this.rebootCmd = config.rebootCmd || 'sudo reboot';
 }
 
 Solis5G.prototype = {
@@ -100,6 +104,21 @@ Solis5G.prototype = {
       function (error, response, responseBody) {
         if (error) {
           this.log.warn('Error getting status: %s', error.message);
+          if (this.rebootOnNetworkFailure && error.message === this.rebootOnNetworkFailure) {
+            this.log.warn('rebootOnNetworkFailure set to true, reboot machine!');
+            exec(this.rebootCmd, (error, stdout, stderr) => {
+              if (error) {
+                console.log(`error: ${error.message}`);
+                return;
+              }
+              if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                return;
+              }
+              console.log(`stdout: ${stdout}`);
+            });
+          }
+
           this.service.getCharacteristic(Characteristic.On).updateValue(new Error('Polling failed'));
           callback(error);
         } else {
